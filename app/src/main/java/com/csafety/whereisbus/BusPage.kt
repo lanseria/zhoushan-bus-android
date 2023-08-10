@@ -1,13 +1,12 @@
 package com.csafety.whereisbus
 
 import android.util.Log
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,7 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -33,32 +31,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.csafety.whereisbus.ui.theme.WhereIsBusTheme
-
-
-@Composable
-fun TitleBar(title: String) {
-    Row(
-        Modifier
-            .fillMaxWidth()
-            .padding(0.dp, 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center) {
-        Text(text = title,
-            style = MaterialTheme.typography.headlineSmall,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
 
 @Composable
 fun SearchBar () {
@@ -73,7 +51,7 @@ fun SearchBar () {
         var searchText by remember { mutableStateOf("") }
         BasicTextField(
             value = searchText,
-            onValueChange = {it -> searchText = it},
+            onValueChange = { searchText = it },
             Modifier
                 .padding(start = 24.dp)
                 .weight(1f),
@@ -100,8 +78,8 @@ fun SearchBar () {
 
 @Composable
 fun HotBusButtons (hotBusLineList: List<HotBusLine>?) {
-    var profile = remember {
-        mutableStateOf<List<HotBusLine>>(hotBusLineList ?: listOf())
+    val profile = remember {
+        mutableStateOf(hotBusLineList ?: listOf())
     }
 
     LaunchedEffect(key1 = Unit, block = {
@@ -119,10 +97,12 @@ fun HotBusButtons (hotBusLineList: List<HotBusLine>?) {
         Text(text = "热门公交: ")
         LazyRow (
             Modifier
-                .padding(0.dp, 12.dp)
-                .fillMaxWidth()){
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            contentPadding = PaddingValues(0.dp, 8.dp)
+            ){
             itemsIndexed(items = profile.value) {
-                    index, item ->
+                    _, item ->
                 Button(onClick = {
                 }, Modifier.padding(4.dp)) {
                     Text(text = item.name)
@@ -134,19 +114,18 @@ fun HotBusButtons (hotBusLineList: List<HotBusLine>?) {
 }
 
 @Composable
-fun BusPage (data: BusPagesData) {
-    var hotBusLineList = data.hotBusLine
-        Column(
-            Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.background)
-                ,
-            verticalArrangement = Arrangement.Top
-        ) {
-            TitleBar("公交查询")
-            SearchBar()
-            HotBusButtons(hotBusLineList)
-        }
+fun BusPage (data: BusPagesData, title: String = "公交查询") {
+    val hotBusLineList = data.hotBusLine
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background),
+        verticalArrangement = Arrangement.Top
+    ) {
+        TitleBar(title)
+        SearchBar()
+        HotBusButtons(hotBusLineList)
+    }
 }
 
 

@@ -15,26 +15,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val mockBusPagesData = BusPagesData(
-                hotBusLine = listOf(HotBusLine(_id = "1", name = "228路", count = 1)),
-                hotBusStop = listOf(
-                    HotBusStop(
-                    _id = "2",
-                    stationName = "常州花苑",
-                    count = 1
-                )
-                )
-            )
             WhereIsBusTheme {
                 val navController = rememberNavController()
                 Column {
 //                val currentRoute = navController.currentDestination?.route ?: "bus"
                     NavHost(navController = navController, startDestination = "bus", Modifier.weight(1f)) {
-                        composable("bus") {
-                            BusPage(mockBusPagesData)
-                        }
-                        composable("stop") {
-                            StopPage(mockBusPagesData)
+                        tabBarList.forEach {
+                            composable(it.path, content = it.comp)
                         }
                     }
                     NavBar(navController)
